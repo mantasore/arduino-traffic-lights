@@ -1,6 +1,6 @@
-/*-------------Temporary code-------------*/
+/*=============Temporary code=============*/
 
-// This block code is for intelisense to shut the fuck up
+// This code block is for intelisense to shut the fuck up
 
 #include <cstdint>
 
@@ -20,7 +20,7 @@ void attachInterrupt(int a, void(*func), enum LEVEL);
 int digitalPinToInterrupt(int a);
 int millis();
 enum LEVEL digitalRead(int a);
-/*----------------------------------------*/
+/*========================================*/
 
 #define YELLOW_LIGHT_DELAY 1000
 #define RED_GREEN_LIGHT_DELAY 7000
@@ -30,10 +30,12 @@ const uint8_t ledPins[] = {13, 12, 11, 10, 9, 8, 7, 6}; // Pins to initialize as
 
 // Order of the traffic lights
 const uint8_t ledOrder[][4] = { {8, 13}, // {1st Pin, 2nd Pin}
-                                {8, 13},
-                                {10, 0},
-                                {12, 0},
-                                {11, 0}};
+                                {9, 13},
+                                {10,13},
+                                {10, 12},
+                                {10, 11},
+                                {10, 12},
+                                {10, 13}};
 const unsigned int ledOrderSize = sizeof(ledOrder) / sizeof(ledOrder[0]);
 
 uint8_t previousBuffer[2] = {};
@@ -45,7 +47,7 @@ volatile bool buttonPressed = false;
 
 void buttonInterrupt()
 {
-    //Button Deboucer
+    //Button Debouncer
     unsigned long interruptTime = millis();
 
     if (interruptTime - lastInterruptTime > 100)
