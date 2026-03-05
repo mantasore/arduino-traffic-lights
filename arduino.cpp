@@ -75,16 +75,16 @@ int lastButtonState = 0;
 
 void loop()
 {
-    // This is just a parser 
+    // This really is just a parser 
 
     // Check if we really need to turn of the previous leds
     if(ledOrder[currentPins][0] != previousBuffer[0])
     {
-        digitalWrite(ledOrder[currentPins][0], LOW);
+        digitalWrite(previousBuffer[0], LOW);
     }
     else if(ledOrder[currentPins][1] != previousBuffer[1])
     {
-        digitalWrite(ledOrder[currentPins][1], LOW);
+        digitalWrite(previousBuffer[1], LOW);
     }
 
     previousBuffer[0] = ledOrder[currentPins][0];
