@@ -112,19 +112,24 @@ void loop()
         {
             buttonPressed = false;
 
-            digitalWrite(12, HIGH);
-            digitalWrite(9, HIGH);
-            delay(YELLOW_LIGHT_DELAY);
-            digitalWrite(12, LOW);
-            digitalWrite(9, LOW);
-
-            digitalWrite(13, HIGH);
-            digitalWrite(10, HIGH);
+            if(digitalRead(8) == HIGH)
+            {
+                digitalWrite(9, HIGH);
+                delay(YELLOW_LIGHT_DELAY);
+                digitalWrite(9, LOW);
+                digitalWrite(10, HIGH);
+            }
+            else if (digitalRead(11) == HIGH)
+            {
+                digitalWrite(12, HIGH);
+                delay(YELLOW_LIGHT_DELAY);
+                digitalWrite(12, LOW);
+                digitalWrite(13, HIGH);
+            }
+            
             digitalWrite(7, LOW);
             digitalWrite(6, HIGH);
             delay(PEDESTRIAN_LIGHT_DELAY);
-            digitalWrite(13, LOW);
-            digitalWrite(10, LOW);
             digitalWrite(7, HIGH);
             digitalWrite(6, LOW);
         }
