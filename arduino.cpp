@@ -31,7 +31,7 @@ const uint8_t ledPins[] = {13, 12, 11, 10, 9, 8, 7, 6}; // Pins to initialize as
 // Order of the traffic lights
 const uint8_t ledOrder[][4] = { {8, 13},  // Green, Red    {1st Pin, 2nd Pin}
                                 {9, 13},  // Yellow, Red
-                                {10,13},  // Red, Red
+                                {10, 13}, // Red, Red
                                 {10, 12}, // Red, Yellow
                                 {10, 11}, // Red, Green
                                 {10, 12}, // Red, Yellow
@@ -47,8 +47,6 @@ unsigned int currentPins = 0;
 volatile unsigned long lastInterruptTime = 0;
 volatile bool buttonPressed = false;
 
-int whichLight = 8;
-
 void buttonInterrupt()
 {
     //Button Debouncer
@@ -59,6 +57,15 @@ void buttonInterrupt()
         buttonPressed = true;
         lastInterruptTime = interruptTime;
     }
+}
+
+void lightSequence(uint8_t pin1, uint8_t pin2, uint8_t pin3)
+{
+    digitalWrite(pin1, LOW);
+    digitalWrite(pin2, HIGH);
+    delay(YELLOW_LIGHT_DELAY);
+    digitalWrite(pin2, LOW);
+    digitalWrite(pin3, HIGH);
 }
 
 void setup()
@@ -75,7 +82,6 @@ void setup()
     digitalWrite(7, HIGH);
 }
 
-int lastButtonState = 0;
 
 void loop()
 {
@@ -113,48 +119,20 @@ void loop()
 
             if(digitalRead(8) == HIGH)
             {
-                whichLight = 8;
-
-                digitalWrite(8, LOW);
-                digitalWrite(9, HIGH);
-                delay(YELLOW_LIGHT_DELAY);
-                digitalWrite(9, LOW);
-                digitalWrite(10, HIGH);
+                currentPins++;
+                lightSequence(8, 9, 10);
             }
             else if (digitalRead(11) == HIGH)
             {
-                whichLight = 11;
-
-                digitalWrite(11, LOW);
-                digitalWrite(12, HIGH);
-                delay(YELLOW_LIGHT_DELAY);
-                digitalWrite(12, LOW);
-                digitalWrite(13, HIGH);
+                currentPins++;
+                lightSequence(11, 12, 13);
             }
 
             digitalWrite(7, LOW);
             digitalWrite(6, HIGH);
             delay(PEDESTRIAN_LIGHT_DELAY);
-            digitalWrite(7, HIGH);
             digitalWrite(6, LOW);
-
-            if (whichLight == 8)
-            {
-                digitalWrite(10, LOW);
-                digitalWrite(9, HIGH);
-                delay(YELLOW_LIGHT_DELAY);
-                digitalWrite(9, LOW);
-                digitalWrite(8, HIGH);
-
-            }
-            else if (whichLight == 11)
-            {
-                digitalWrite(13, LOW);
-                digitalWrite(12, HIGH);
-                delay(YELLOW_LIGHT_DELAY);
-                digitalWrite(12, LOW);
-                digitalWrite(11, HIGH);
-            }
+            digitalWrite(7, HIGH);
         }
     }
 
