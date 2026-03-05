@@ -35,7 +35,12 @@ const uint8_t ledOrder[][4] = { {8, 13}, // {1st Pin, 2nd Pin}
                                 {10, 12},
                                 {10, 11},
                                 {10, 12},
-                                {10, 13}};
+                                {10, 13},
+                                {9, 13},
+                                {8, 13},
+                                {8, 12},
+                                {8, 11},
+                                {8, 12} };
 const unsigned int ledOrderSize = sizeof(ledOrder) / sizeof(ledOrder[0]);
 
 uint8_t previousBuffer[2] = {};
