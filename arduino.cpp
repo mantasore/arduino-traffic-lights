@@ -10,7 +10,8 @@ enum LEVEL
     HIGH,
     INPUT,
     OUTPUT,
-    RISING
+    RISING,
+    INPUT_PULLUP
 };
 
 void digitalWrite(int a, enum LEVEL);
@@ -53,13 +54,22 @@ void buttonInterrupt()
     }
 }
 
-void switchLights(uint8_t pin1, uint8_t yellowLightpin, uint8_t pin2)
+void switchTrafficLights(uint8_t firstPin, uint8_t yellowLightpin, uint8_t finalPin)
 {
-    digitalWrite(pin1, LOW);
+    digitalWrite(firstPin, LOW);
     digitalWrite(yellowLightpin, HIGH);
     delay(YELLOW_LIGHT_DELAY);
     digitalWrite(yellowLightpin, LOW);
-    digitalWrite(pin2, HIGH);
+    digitalWrite(finalPin, HIGH);
+}
+
+void switchPedestrianLights()
+{
+    digitalWrite(7, LOW);
+    digitalWrite(6, HIGH);
+    delay(PEDESTRIAN_LIGHT_DELAY);
+    digitalWrite(6, LOW);
+    digitalWrite(7, HIGH);
 }
 
 void setup()
@@ -69,7 +79,7 @@ void setup()
         pinMode(pin, OUTPUT);
     }
 
-    pinMode(3, INPUT);
+    pinMode(3, INPUT_PULLUP);
 
     attachInterrupt(digitalPinToInterrupt(3), buttonInterrupt, RISING);
 
@@ -79,9 +89,29 @@ void setup()
 
 void loop()
 {
-    switchLights( ledOrder[currentPins][0], 
-                  ledOrder[currentPins][1], 
-                  ledOrder[currentPins][2] );
+    if (buttonPressed)
+    {
+        buttonPressed = false;
+
+        if (ledOrder[currentPins-1][0] == 8 || ledOrder[currentPins-1][2] == 11)
+        {
+            currentPins--;
+
+            switchTrafficLights( ledOrder[currentPins][2], 
+                                 ledOrder[currentPins][1], 
+                                 ledOrder[currentPins][0] );
+
+            switchPedestrianLights();
+        }
+        else
+        {
+            switchPedestrianLights();
+        }
+    }
+
+    switchTrafficLights( ledOrder[currentPins][0], 
+                         ledOrder[currentPins][1], 
+                         ledOrder[currentPins][2] );
     
     if (currentPins % 2 != 0)
     {
@@ -91,30 +121,6 @@ void loop()
     {
         delay(1000);
     }
-    
-    //     // Do this if the button was pressed
-    //     if (buttonPressed)
-    //     {
-    //         buttonPressed = false;
-
-    //         if(digitalRead(8) == HIGH)
-    //         {
-    //             currentPins++;
-    //             lightSequence(8, 9, 10);
-    //         }
-    //         else if (digitalRead(11) == HIGH)
-    //         {
-    //             currentPins++;
-    //             lightSequence(11, 12, 13);
-    //         }
-
-    //         digitalWrite(7, LOW);
-    //         digitalWrite(6, HIGH);
-    //         delay(PEDESTRIAN_LIGHT_DELAY);
-    //         digitalWrite(6, LOW);
-    //         digitalWrite(7, HIGH);
-    //     }
-    // }
 
     // Check if the cycle has ended
     if (currentPins >= ledOrderSize - 1)
