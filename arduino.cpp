@@ -24,8 +24,8 @@ enum LEVEL digitalRead(int a);
 /*========================================*/
 
 #define YELLOW_LIGHT_DELAY 1000
-#define GREEN_LIGHT_DELAY 7000
-#define PEDESTRIAN_LIGHT_DELAY 10000
+#define GREEN_LIGHT_DELAY 10000
+#define PEDESTRIAN_LIGHT_DELAY 15000
 
 const uint8_t ledPins[] = {13, 12, 11, 10, 9, 8, 7, 6}; // Pins to initialize as output pins
 
@@ -54,7 +54,10 @@ void buttonInterrupt()
     }
 }
 
-void switchTrafficLights(uint8_t firstPin, uint8_t yellowLightpin, uint8_t finalPin)
+// The two functions below could be merged into one,
+// but they're seperated for readability and simplicity.
+
+void switchTrafficLights(uint8_t firstPin, uint8_t yellowLightpin, uint8_t finalPin) 
 {
     digitalWrite(firstPin, LOW);
     digitalWrite(yellowLightpin, HIGH);
@@ -93,10 +96,10 @@ void loop()
     {
         buttonPressed = false;
 
-        if (ledOrder[currentPins-1][0] == 8 || ledOrder[currentPins-1][2] == 11)
-        {
-            currentPins--;
+        currentPins = (currentPins + ledOrderSize - 1) % ledOrderSize; // Move back one step in the traffic light sequence
 
+        if (ledOrder[currentPins][2] == 8 || ledOrder[currentPins][2] == 11)
+        {
             switchTrafficLights( ledOrder[currentPins][2], 
                                  ledOrder[currentPins][1], 
                                  ledOrder[currentPins][0] );
@@ -105,6 +108,8 @@ void loop()
         }
         else
         {
+            currentPins = (currentPins + 1) % ledOrderSize;
+
             switchPedestrianLights();
         }
     }
@@ -122,13 +127,5 @@ void loop()
         delay(1000);
     }
 
-    // Check if the cycle has ended
-    if (currentPins >= ledOrderSize - 1)
-    {
-        currentPins = 0;
-    }
-    else
-    {
-        currentPins++;
-    }
+    currentPins = (currentPins + 1) % ledOrderSize;
 }
